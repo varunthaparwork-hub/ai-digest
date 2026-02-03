@@ -1,31 +1,45 @@
-﻿from dotenv import load_dotenv
-import os
+﻿import os
+from dotenv import load_dotenv
 
 load_dotenv()
 
-def get_env(key: str, default=None):
-    value = os.getenv(key, default)
-    if value is None:
-        raise RuntimeError(f'Missing required env var: {key}')
-    return value
+# =========================
+# PERSONA TOGGLES
+# =========================
+PERSONA_GENAI_NEWS_ENABLED = os.getenv("PERSONA_GENAI_NEWS_ENABLED", "false").lower() == "true"
+PERSONA_PRODUCT_IDEAS_ENABLED = os.getenv("PERSONA_PRODUCT_IDEAS_ENABLED", "false").lower() == "true"
 
-# Persona toggles
-PERSONA_GENAI_NEWS_ENABLED = get_env('PERSONA_GENAI_NEWS_ENABLED') == 'true'
-PERSONA_PRODUCT_IDEAS_ENABLED = get_env('PERSONA_PRODUCT_IDEAS_ENABLED') == 'true'
+# =========================
+# LLM CONFIG
+# =========================
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL")
 
-# LLM configuration
-OLLAMA_BASE_URL = get_env('OLLAMA_BASE_URL')
-OLLAMA_MODEL = get_env('OLLAMA_MODEL')
+# =========================
+# THRESHOLDS
+# =========================
+GENAI_NEWS_MIN_RELEVANCE = float(os.getenv("GENAI_NEWS_MIN_RELEVANCE", "0.5"))
+PRODUCT_IDEAS_MIN_REUSABILITY = float(os.getenv("PRODUCT_IDEAS_MIN_REUSABILITY", "0.5"))
 
-# Thresholds
-GENAI_NEWS_MIN_RELEVANCE = float(get_env('GENAI_NEWS_MIN_RELEVANCE'))
-PRODUCT_IDEAS_MIN_REUSABILITY = float(get_env('PRODUCT_IDEAS_MIN_REUSABILITY'))
+# =========================
+# SUMMARY LENGTH CONTROL
+# =========================
+GENAI_SUMMARY_MODE = os.getenv("GENAI_SUMMARY_MODE", "LONG").upper()
 
-# Delivery toggles
-EMAIL_ENABLED = get_env('EMAIL_ENABLED') == 'true'
-TELEGRAM_ENABLED = get_env('TELEGRAM_ENABLED') == 'true'
+SUMMARY_WORD_LIMITS = {
+    "SHORT": 40,
+    "MEDIUM": 80,
+    "LONG": 200,
+}
 
-# Telegram configuration
-TELEGRAM_ENABLED = get_env('TELEGRAM_ENABLED') == 'true'
-TELEGRAM_BOT_TOKEN = get_env('TELEGRAM_BOT_TOKEN')
-TELEGRAM_CHAT_ID = get_env('TELEGRAM_CHAT_ID')
+GENAI_SUMMARY_MAX_WORDS = SUMMARY_WORD_LIMITS.get(
+    GENAI_SUMMARY_MODE,
+    200
+)
+
+# =========================
+# TELEGRAM
+# =========================
+TELEGRAM_ENABLED = os.getenv("TELEGRAM_ENABLED", "false").lower() == "true"
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
